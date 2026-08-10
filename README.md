@@ -1,37 +1,47 @@
 # USGS Triplifier
 
-A dockerized application for turning the USGS GNIS dataset into linked data triples.
+The ETL process and graph database for gnis-ld.org data
 
 - **Authors**: [Blake Regalia](https://github.com/blake-regalia), Thomas Thelen ([NCEAS](http://www.nceas.ucsb.edu))
 - **License**: [Apache 2](http://opensource.org/licenses/Apache-2.0)
 - [**Submit Bugs and feature requests**](https://github.com/DataONEorg/usgs-triplifier/issues)
+- Contact us: support@dataone.org
+- [DataONE discussions](https://github.com/DataONEorg/dataone/discussions)
 
 ## Background
 
-The usgs triplifier stack ingests the USGS GNIS dataset and transforms a subset of the data into the RDF data model in the turtle format.
+The USGS hosts several data products that contain information about places: their location, name(s), descriptions, geometries, etc. These files are hosted in several formats: text, gdb, and gpkg. This repository contains
+
+1. A python library for converting the names database in the gpkg data format to RDF
+2. A graph database service for hosting the data
+3. An ETL process for fetching the data from USGS, transforming it into RDF, and loading it into the graph database
 
 ## Development
 
-`base/`: Contains the base docker image that the triplifier uses.
-`lib/`: Contains the javascript responsible for most of the application logic around triplification.
-`tools/`: Shell scripts that are called from npm. These are run in series, which execute the javascript in `lib/`.
+The general idea is that any changes to the generation of triples happens in the `usgs_triplifier` package. After each change, increment the version. The deployment system should then have its `usgs_triplifier` version changed to the new one, any refactorings, and re-deployed.
 
+### Docker Image
 
-### Contributing
+The dockerfile in the `docker` folder is used to create the image for serving GraphDB both locally and with kubernetes. The image is included with an entrypoint script that should be run to configure the repository and perform the data etl.
 
-The takeaway for contributing is that feature branches are created off of the `develop` branch and pull requests should be made into the `develop` branch rather than `main`.
+All contributions are welcome! For more information how how to fork, branch, and make pull requests visit the [contributing](./CONTRIBUTING.md) guide.
+### Testing
 
-For example, the workflow to create a pull request for a feature that adds support for fetch.txt follows
+There are two ways to interact with things:
 
-- Create an issue describing your planned changes, or add a comment to an existing relevant issue
-- Checkout the `develop` branch, followed by `git checkout -b feature_support_fetch_file`
-- Commit your changes to the `feature_support_fetch_file` branch
-- Create a pull request from `feature_support_fetch_file` into `develop` and outline the code changes and how to test it
-- Once the code is reviewed, our team will merge in your changes and you're done!
+1. Directly calling the ugs-triplifier package via `python -m <one of the modules here>`
+2. By running the local docker stack and letting automation download, triplify, and upload
+
+```bash
+cd docker
+docker compose up
+```
 
 
 ## Acknowledgments
 
 Work on this package was supported by:
 
-[![dataone_footer](https://www.dataone.org/sites/all/images/DataONE_LOGO.jpg)](http://dataone.org)
+[![dataone_footer](https://user-images.githubusercontent.com/6643222/162324180-b5cf0f5f-ae7a-4ca6-87c3-9733a2590634.png)](http://dataone.org)
+
+NSF OIA grant [2033521](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2033521)

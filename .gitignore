@@ -1,9 +1,10 @@
 .env
-node_modules
-scrap
-dist
-data
-lib/debug
-coverage
+**/.venv
+usgs-triplifier/dist
 .git-dev
 .DS_Store
+**/__pycache__**
+**/.ruff_cache
+**/**.egg-info
+**/.pytest_cache
+.coverage
