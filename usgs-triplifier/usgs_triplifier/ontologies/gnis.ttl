@@ -1,0 +1,223 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+
+@prefix usgs: <http://gnis-ld.org/lod/usgs/ontology/> .
+@prefix gnis: <http://gnis-ld.org/lod/gnis/ontology/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+
+# ------------------------------
+# Ontology Metadata
+# ------------------------------
+
+gnis: a owl:Ontology ;
+	owl:versionIRI gnis:Version.1.1.0 ;
+	owl:versionInfo "1.1.0" ;
+	vann:preferredNamespacePrefix "gnis" ;
+	vann:preferredNamespaceUri "http://gnis-ld.org/lod/gnis/ontology/" ;
+	dcterms:title "Geographic Names Information Systems (GNIS)"@en ;
+	dcterms:creator "Blake Regalia", "Thomas Thelen" ;
+	dcterms:publisher <https://www.dataone.org/> ;
+	dcterms:source <https://www.usgs.gov/tools/geographic-names-information-system-gnis> ;
+	rdfs:seeAlso <https://gnis-ld.org/vocabularies> ;
+	dcterms:description "Properties and administrative classes for describing records from the USGS Geographic Names Information System (GNIS) as linked data: official and variant names, the state and county a feature lies in, descriptive and historical notes, record dates, crosswalk keys, and the retention vocabulary that keeps identifiers resolvable after USGS retires a record. The feature classes themselves (summits, streams, populated places, ...) are defined by the companion usgs: ontology."@en ;
+	dcterms:license <http://www.opendatacommons.org/licenses/pddl/> ;
+	dcterms:created "2018-03-01"^^xsd:date ;
+	dcterms:modified "2026-08-12"^^xsd:date .
+
+
+# ------------------------------
+# GNIS Predicates
+# ------------------------------
+
+gnis:alternativeName a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Alternative Name"@en ;
+	rdfs:comment "A variant or historical name USGS records for the feature."@en ;
+	rdfs:subPropertyOf skos:altLabel ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range rdf:langString .
+
+gnis:censusGeoid a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Census GEOID"@en ;
+	rdfs:comment "The U.S. Census Bureau GEOID for this feature"@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range xsd:string .
+
+gnis:citation a rdf:Property ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Citation"@en ;
+	rdfs:comment "The source USGS cites for a name. Usually a language-tagged literal; gnis:UnknownCitation when USGS released the record without one."@en ;
+	rdfs:domain usgs:Feature .
+
+gnis:country a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Country"@en ;
+	rdfs:comment "The country a feature or unit lies in, as a feature alias (e.g. gnisf-alias:United_States) that is the subject of the gnis:Country record."@en .
+
+gnis:county a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "County"@en ;
+	rdfs:comment "The county a feature lies in."@en ;
+	rdfs:domain usgs:Feature .
+
+gnis:countyCode a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "County Code"@en ;
+	rdfs:comment "Three-digit FIPS county code from USGS."@en ;
+	rdfs:domain gnis:County ;
+	rdfs:range xsd:string .
+
+gnis:countyName a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "County Name"@en ;
+	rdfs:comment "The county's name as a literal, on gnis:County records."@en ;
+	rdfs:domain gnis:County ;
+	rdfs:range rdf:langString .
+
+gnis:dateFeatureCreated a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Date Feature Created"@en ;
+	rdfs:comment "The date USGS first added the feature to GNIS."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range xsd:date .
+
+gnis:dateFeatureEdited a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Date Feature Edited"@en ;
+	rdfs:comment "The date USGS last edited the feature's record."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range xsd:date .
+
+gnis:dateNameCreated a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Date Name Created"@en ;
+	rdfs:comment "The date the official name's record was created upstream."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range xsd:date .
+
+gnis:description a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Description"@en ;
+	rdfs:comment "USGS's prose description of the feature."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range rdf:langString .
+
+gnis:disambiguatesTo a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Disambiguates To"@en ;
+	rdfs:comment "Links a feature alias shared by several features (the same name, class, state, and county) to each of the features it may denote. Aliases naming exactly one feature use owl:sameAs instead."@en .
+
+gnis:elevation a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Elevation"@en ;
+	rdfs:comment "The 3DEP-derived elevation value that USGS shipped in the GNIS dumps through 2025. USGS no longer distributes elevation with GNIS, so this property is not populated in current releases; it is retained here to describe data loaded from pre-2026 dumps."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range qudt:QuantityValue .
+
+gnis:featureId a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Feature Id"@en ;
+	rdfs:comment "The permanent GNIS Feature ID."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range xsd:string .
+
+gnis:history a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "History"@en ;
+	rdfs:comment "USGS's prose note on the feature's naming and history."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range rdf:langString .
+
+gnis:lastAppearedIn a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Last Appeared In"@en ;
+	rdfs:comment "The dataset release in which this feature last appeared in the upstream GNIS sources."@en ;
+	rdfs:domain usgs:Feature .
+
+gnis:mapName a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Map Name"@en ;
+	rdfs:comment "The USGS topographic map the feature appears on."@en ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range rdf:langString .
+
+gnis:officialName a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Official Name"@en ;
+	rdfs:comment "The federally recognized name of the feature, per the U.S. Board on Geographic Names."@en ;
+	rdfs:subPropertyOf skos:prefLabel ;
+	rdfs:domain usgs:Feature ;
+	rdfs:range rdf:langString .
+
+gnis:state a owl:ObjectProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "State"@en ;
+	rdfs:comment "The state a feature lies in."@en ;
+	rdfs:domain usgs:Feature .
+
+gnis:stateCode a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "State Code"@en ;
+	rdfs:comment "Two-letter USPS state abbreviation, on gnis:State records."@en ;
+	rdfs:domain gnis:State ;
+	rdfs:range xsd:string .
+
+gnis:stateId a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "State Id"@en ;
+	rdfs:comment "Two-digit FIPS state code, on gnis:State records."@en ;
+	rdfs:domain gnis:State ;
+	rdfs:range xsd:string .
+
+gnis:stateName a owl:DatatypeProperty ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "State Name"@en ;
+	rdfs:comment "The state's name as a literal, on gnis:State records."@en ;
+	rdfs:domain gnis:State ;
+	rdfs:range rdf:langString .
+
+
+# ------------------------------
+# GNIS Instantiable Feature Types
+# ------------------------------
+
+gnis:Country a owl:Class ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Country"@en ;
+	rdfs:comment "A nation; the value of gnis:country."@en ;
+	rdfs:subClassOf usgs:Division .
+
+gnis:County a owl:Class ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "County"@en ;
+	rdfs:comment "Second-order division of a nation such as parish, borough, county, municipio, or judicial division, and independent cities in Maryland, Missouri, Nevada, and Virginia."@en ;
+	rdfs:subClassOf usgs:Division .
+
+gnis:State a owl:Class ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "State"@en ;
+	rdfs:comment "First-order division of a nation."@en ;
+	rdfs:subClassOf usgs:Division .
+
+
+# ------------------------------
+# GNIS Individuals
+# ------------------------------
+
+gnis:UnknownCounty a owl:NamedIndividual ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Unknown County"@en ;
+	rdfs:comment "Placeholder object of gnis:county for records whose upstream county field is empty."@en .
+
+gnis:UnknownCitation a owl:NamedIndividual ;
+	rdfs:isDefinedBy gnis: ;
+	rdfs:label "Unknown Citation"@en ;
+	rdfs:comment "Placeholder object of gnis:citation for names USGS ships with the literal 'Citation Unknown'."@en .

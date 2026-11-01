@@ -1,0 +1,504 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+@prefix usgs: <http://gnis-ld.org/lod/usgs/ontology/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+
+# ------------------------------
+# Ontology Metadata
+# ------------------------------
+
+usgs: a owl:Ontology ;
+	owl:versionIRI usgs:Version.1.1.0 ;
+	owl:versionInfo "1.1.0" ;
+	vann:preferredNamespacePrefix "usgs" ;
+	vann:preferredNamespaceUri "http://gnis-ld.org/lod/usgs/ontology/" ;
+	dcterms:title "U.S. Geological Survey (USGS)"@en ;
+	dcterms:creator "Blake Regalia", "Thomas Thelen" ;
+	dcterms:publisher <https://www.dataone.org/> ;
+	dcterms:source <https://www.usgs.gov/tools/geographic-names-information-system-gnis> ;
+	rdfs:seeAlso <https://gnis-ld.org/vocabularies> ;
+	dcterms:description "The feature-class hierarchy for USGS GNIS features as linked data: a concrete class for each GNIS feature class (summit, stream, lake, populated place, ...), grouped under abstract Terrain, Surface Water, and Built Up Area supertypes rooted in GeoSPARQL. Classes USGS has retired from current GNIS releases remain declared, marked owl:deprecated, because features in GNIS-LD releases built from USGS exports up to 2021 still use them. Record-level properties are defined by the companion gnis: ontology."@en ;
+	dcterms:license <http://www.opendatacommons.org/licenses/pddl/> ;
+	dcterms:created "2018-03-01"^^xsd:date ;
+	dcterms:modified "2026-08-12"^^xsd:date .
+
+
+# ------------------------------
+# USGS Abstract Feature Types
+# ------------------------------
+
+usgs:Feature a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Feature"@en ;
+	rdfs:comment "A named geographic feature in the GNIS. The root of the feature-class hierarchy and the domain of the gnis: record properties."@en ;
+	rdfs:subClassOf geosparql:Feature .
+
+usgs:Division a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Division"@en ;
+	rdfs:comment "An administrative division of a nation (see gnis:State and gnis:County)."@en ;
+	rdfs:subClassOf usgs:Feature .
+
+usgs:Terrain a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:subClassOf geosparql:SpatialObject ;
+	rdfs:label "Terrain"@en ;
+	rdfs:comment "Abstract grouping of natural landform feature classes."@en .
+
+usgs:SurfaceWater a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:subClassOf geosparql:SpatialObject ;
+	rdfs:label "Surface Water"@en ;
+	rdfs:comment "Abstract grouping of hydrographic feature classes."@en .
+
+usgs:BuiltUpArea a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Built Up Area"@en ;
+	rdfs:subClassOf geosparql:SpatialObject ;
+	rdfs:comment "An area of intensive use, with much of the land covered by structures"@en .
+
+usgs:HistoricalFeature a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Historical Feature"@en ;
+	rdfs:subClassOf geosparql:SpatialObject ;
+	rdfs:comment "A feature no longer shipped in the current upstream GNIS release. Its last-known record is retained — alongside its original feature class — so the URI keeps resolving; gnis:lastAppearedIn links it to the release that last contained it."@en .
+
+
+# ------------------------------
+# USGS Classes
+# ------------------------------
+
+usgs:Arch a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Arch"@en ;
+	rdfs:comment "A naturally occurring, freestanding curved structure that spans an opening"@en ;
+	rdfs:subClassOf usgs:Terrain, usgs:BuiltUpArea .
+
+usgs:Area a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Area"@en ;
+	rdfs:comment "Any one of several areally extensive natural features not included in other categories"@en .
+
+usgs:Arroyo a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Arroyo"@en ;
+	rdfs:comment "Watercourse or channel through which water may occasionally flow (coulee, draw, gully, wash)"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Bar a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Bar"@en ;
+	rdfs:comment "A natural accumulation of sand, gravel, or other material forming an underwater or exposed embankment"@en ;
+	rdfs:subClassOf usgs:Terrain, usgs:BuiltUpArea .
+
+usgs:Basin a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Basin"@en ;
+	rdfs:comment "A bowl-shaped depression in the surface of the land or ocean floor"@en ;
+	rdfs:subClassOf usgs:Terrain, usgs:SurfaceWater .
+
+usgs:Bay a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Bay"@en ;
+	rdfs:comment "A water area that is an opening of the sea or ocean into the land, or of an estuary, lake, or river into its shore"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Beach a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Beach"@en ;
+	rdfs:comment "A gently sloping shore which is washed by waves or tides, especially the parts covered by sand or pebbles"@en ;
+	rdfs:subClassOf usgs:Terrain, usgs:SurfaceWater .
+
+usgs:Bench a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Bench"@en ;
+	rdfs:comment "An area of relatively level land on the flank of an elevation such as a hill, ridge, or mountain where the slope of the land rises on one side and descends on the opposite side (level)"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Bend a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Bend"@en ;
+	rdfs:comment "A curve in the course of a stream or the land within the curve"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Canal a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Canal"@en ;
+	rdfs:comment "Manmade waterway used by watercraft or for drainage, irrigation, mining, or water power"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea, usgs:SurfaceWater .
+
+usgs:Cape a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Cape"@en ;
+	rdfs:comment "A relatively extensive land area jutting into a water body, which prominently marks a change in or interrupts notably the coastal trend of that water body"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Census a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Census"@en ;
+	rdfs:comment "A statistical area delineated locally specifically for the tabulation of Census Bureau data"@en ;
+	rdfs:subClassOf usgs:Division .
+
+usgs:Channel a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Channel"@en ;
+	rdfs:comment "Linear deep part of a body of water through which the main volume of water flows and is frequently used as a route for watercraft (passage, reach, strait, thoroughfare, throughfare)"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:CivilGovernment a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Civil Government"@en ;
+	rdfs:comment "A political division formed for administrative purposes (borough, county, incorporated place, municipio, parish, town, township)"@en .
+
+usgs:Cliff a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Cliff"@en ;
+	rdfs:comment "Very steep or vertical slope"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Crater a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Crater"@en ;
+	rdfs:comment "Circular-shaped depression at the summit of a volcanic cone or one on the surface of the land caused by the impact of a meteorite; a manmade depression caused by an explosion"@en ;
+	rdfs:subClassOf usgs:Terrain, usgs:Basin .
+
+usgs:Crossing a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Crossing"@en ;
+	rdfs:comment "A place where two or more routes of transportation form a junction or intersection"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Flat a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Flat"@en ;
+	rdfs:comment "A level tract lying at a small depth below the surface of water, or alternately covered and left bare by the tide"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Gap a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Gap"@en ;
+	rdfs:comment "A low point or opening between hills or mountains or in a ridge or mountain range (col, notch, pass, saddle, water gap, wind gap)"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Glacier a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Glacier"@en ;
+	rdfs:comment "Body or stream of ice moving outward and downslope from an area of accumulation; an area of relatively permanent snow or ice on the top or side of a mountain or mountainous area"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Gut a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Gut"@en ;
+	rdfs:comment "A narrow natural passage or contracte strait connecting two bodies of water where no flow can be determined."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Island a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Island"@en ;
+	rdfs:comment "An area of dry or relatively dry land surrounded by water or low wet land"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Isthmus a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Isthmus"@en ;
+	rdfs:comment "A narrow strip of land, bordered on both sides by water, connecting two larger land areas"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Lake a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Lake"@en ;
+	rdfs:comment "A standing body of water with a predominantly natural shoreliine surrounded by land"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Lava a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Lava"@en ;
+	rdfs:comment "Formations resulting from the consolidation of molten rock on the surface of the Earth"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Levee a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Levee"@en ;
+	rdfs:comment "Natural or manmade embankment flanking alongside a stream"@en ;
+	rdfs:subClassOf usgs:Embankment .
+
+usgs:MountainRange a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Mountain Range"@en ;
+	rdfs:comment "A series of connected and aligned mountains or mountain ridges"@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Plain a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Plain"@en ;
+	rdfs:comment "A structure built out into the water, usually with its greatest dimension at right angles to the shore, forming a landing place or a place alongside which vessels can lie."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:PopulatedPlace a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Populated Place"@en ;
+	rdfs:comment "Place or area with clustered or scattered buildings and a permanent human population (city, settlement, town, village). A populated place is usually not incorporated and by definition has no legal boundaries. However, a populated place may have a corresponding \"civil\" record, the legal boundaries of which may or may not coincide with the perceived populated place. Distinct from Census and Civil classes."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Rapids a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Rapids"@en ;
+	rdfs:comment "An area of broken, fast flowing water in a stream, where the slope of the bed increases (but without a prominent break of slope which might result in a waterfall), or where a gently dipping bar of harder rock outcrops."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Reservoir a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Reservoir"@en ;
+	rdfs:comment "A constructed basin formed to contain water or other liquids."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Ridge a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Ridge"@en ;
+	rdfs:comment "A long and narrow upland with steep sides; Elevation with a narrow, elongated crest which can be part of a hill or mountain (crest, cuesta, escarpment, hogback, lae, rim, spur)."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Rock a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Rock"@en ;
+	rdfs:comment "An isolated concreted mass of stony material or a single large stone, usually one constituting a danger to navigation. It may be always submerged, always uncovered, or alternately covered and uncovered by the tide."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Sea a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Sea"@en ;
+	rdfs:comment "A body of salt water usaly surrounded by land but often connected to the Ocean"@en ;
+	rdfs:subClassOf usgs:Ocean .
+
+usgs:Slope a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Slope"@en ;
+	rdfs:comment "A gently inclined part of the Earth's surface (grade, pitch)."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Spring a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Spring"@en ;
+	rdfs:comment "A place where water issues from the ground naturally"@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Stream a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Stream"@en ;
+	rdfs:comment "Linear body of water flowing on the Earth's surface."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Summit a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Summit"@en ;
+	rdfs:comment "Prominent elevation rising above the surrounding level of the Earth's surface."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Swamp a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Swamp"@en ;
+	rdfs:comment "Poorly drained wetland, fresh or saltwater, wooded or grassy, possibly covered with open water."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Unknown a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Unknown"@en ;
+	rdfs:comment "Unknown feature type"@en .
+
+usgs:Valley a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Valley"@en ;
+	rdfs:comment "An elongated depression in the earth's surface which generally slopes from one end to the other."@en ;
+	rdfs:subClassOf usgs:Terrain .
+
+usgs:Waterfall a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Waterfall"@en ;
+	rdfs:comment "A vertical or near vertical descent of water over a step or ledge in the bed of a river."@en ;
+	rdfs:subClassOf usgs:SurfaceWater .
+
+usgs:Woodland a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Woodland"@en ;
+	rdfs:comment "Land having a cover of trees, shrubs, or both."@en ;
+	rdfs:subClassOf usgs:Forest .
+
+
+# ------------------------------
+# Retired Feature Classes
+#
+# USGS removed these classes (largely man-made and administrative
+# features) from the current GNIS releases. They remain declared,
+# marked owl:deprecated, because GNIS-LD releases built from legacy dumps
+# (USGS exports up to 2021) still use them.
+# ------------------------------
+
+usgs:Airport a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Airport"@en ;
+	rdfs:comment "A facility, on land, where aircraft can take off and land; usually consists of hard-surfaced landing strips, a control tower, hangars, and accommodations for passengers and cargo"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Bridge a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Bridge"@en ;
+	rdfs:comment "A structure erected over a depression or obstacle to carry traffic or some facility such as a pipeline"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Building a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Building"@en ;
+	rdfs:comment "A permanent walled and roofed construction"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Cemetery a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Cemetery"@en ;
+	rdfs:comment "A place for burying the dead"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Church a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Church"@en ;
+	rdfs:comment "Building used for religious worship (chapel, mosque, synagogue, tabernacle, temple)."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Dam a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Dam"@en ;
+	rdfs:comment "Water barrier or embankment built across the course of a stream or into a body of water to control and (or) impound the flow of water"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea, usgs:SurfaceWater .
+
+usgs:Forest a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Forest"@en ;
+	rdfs:comment "A bounded area of woods, forest, or grassland under the administration of a political agency (national forest, national grasslands, state forest)"@en ;
+	rdfs:subClassOf usgs:EcologicalRegime .
+
+usgs:Harbor a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Harbor"@en ;
+	rdfs:comment "An area of water where ships, planes or other watercraft can anchor or dock"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Hospital a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Hospital"@en ;
+	rdfs:comment "Building where the sick or injured may receive medical or surgical attention"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Locale a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Locale"@en ;
+	rdfs:comment "A named place not otherwise categorized."@en ;
+	rdfs:subClassOf usgs:Division .
+
+usgs:Military a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	rdfs:label "Military"@en ;
+	rdfs:comment "A place or facility used for various aspects of or relating to military activity"@en .
+usgs:Mine a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Mine"@en ;
+	rdfs:comment "An excavation in the earth for the purpose of extracting earth materials"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:OilField a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Oil Field"@en ;
+	rdfs:comment "An area where petroleum is or was removed from the Earth"@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Park a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Park"@en ;
+	rdfs:comment "A place or area developed for public use, recreation, or preservation of a cultural or natural resource."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:PostOffice a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Post Office"@en ;
+	rdfs:comment "An official facility of the U.S. Postal Service used for processing and distributing mail and other postal material."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Reserve a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Reserve"@en ;
+	rdfs:comment "A tract of land set aside for a specific use (does not include forests, civil divisions, parks)."@en ;
+	rdfs:subClassOf usgs:Division .
+
+usgs:School a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "School"@en ;
+	rdfs:comment "Building or group of buildings used as an institution for study, teaching, and learning."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Tower a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Tower"@en ;
+	rdfs:comment "A tall framework or structure, the height of which is required by its function; generally used for observation, storage, or electronic transmission."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Trail a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Trail"@en ;
+	rdfs:comment "A cleared path, beaten track, or improved surface, as through woods or wilderness, not usually trafficed by vehicles because of width, seasonal conditions, or access restrictions."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Tunnel a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Tunnel"@en ;
+	rdfs:comment "An underground or underwater passage."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .
+
+usgs:Well a owl:Class ;
+	rdfs:isDefinedBy usgs: ;
+	owl:deprecated true ;
+	skos:historyNote "Retired upstream: not in the current USGS GNIS data. Used by features in GNIS-LD releases built from USGS exports up to 2021."@en ;
+	rdfs:label "Well"@en ;
+	rdfs:comment "A pit or hole dug or bored into the earth for the extraction of oil, water, other fluids, or gases."@en ;
+	rdfs:subClassOf usgs:BuiltUpArea .

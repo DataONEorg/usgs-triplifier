@@ -1,0 +1,29 @@
+services:
+  graphdb:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "7200:7200"
+    volumes:
+      - ../usgs-triplifier/usgs_triplifier:/app/usgs_triplifier
+      - ../etl/code:/app/code
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7200/rest/repositories"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    entrypoint: []
+    command: ["bash", "entrypoint.sh"]
+    environment:
+      - PYTHONPATH=/app
+      - LOD_BASE=http://gnis-ld.org/lod
+      - GEO_BASE=http://gnis-ld.org/geometry
+      - GNIS_INPUT_DIRECTORY=/app/data/geographic_names
+      - RDF_OUTPUT_DIRECTORY=/app/data/output/gnis
+      - GRAPHDB_URL=http://localhost:7200
+      - GRAPHDB_IMPORT_DIRECTORY=/root/graphdb-import
+      - GDB_USER=admin
+      - GDB_PASS=passw0rd
+      - GDB_DEFAULT_PASS=root
